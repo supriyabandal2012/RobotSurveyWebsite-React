@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import LottieAnimation from '../LottieAnimation';
 
 const PreSurvey = ({ onStartSurvey }) => {
@@ -9,35 +10,42 @@ const PreSurvey = ({ onStartSurvey }) => {
   const [familiarityWithRobots, setFamiliarityWithRobots] = useState('');
   const [preferRobotsOverHumans, setPreferRobotsOverHumans] = useState('');
   const [countryList, setCountryList] = useState([]);
-  const navigate = useNavigate(); // Get the navigate function from react-router-dom
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch the list of countries from the REST Countries API
     fetch('https://restcountries.com/v3.1/all')
       .then((response) => response.json())
       .then((data) => {
-        // Extract country names from the response
         const countryNames = data.map((country) => country.name.common);
         setCountryList(countryNames);
       })
       .catch((error) => console.error('Error fetching countries:', error));
-  }, []); // Run this effect only once when the component mounts
+  }, []);
 
-  const handleStartSurvey = () => {
-    // Validate the input if needed
+  const handleStartSurvey = async () => {
     if (age && gender && country && familiarityWithRobots && preferRobotsOverHumans !== '') {
-      // Check if the age is 18 or above
       if (age === 'yes') {
-        // Pass the pre-survey data to the parent component (App.js)
-        onStartSurvey({
+        const preSurveyData = {
           age,
           gender,
           country,
           familiarityWithRobots,
           preferRobotsOverHumans,
-        });
-        // Redirect to the survey page
-        navigate('/survey'); // Use the navigate function to redirect to /survey
+        };
+
+        try {
+          const response = await axios.post('https://robotsurveybackend.onrender.com/api/submit-pre-survey', preSurveyData);
+
+          if (response.status === 200) {
+            console.log('Pre-survey data submitted successfully!');
+            onStartSurvey(preSurveyData);
+            navigate('/survey');
+          } else {
+            console.error('Failed to submit pre-survey data');
+          }
+        } catch (error) {
+          console.error('Error submitting pre-survey data:', error);
+        }
       } else {
         alert('You must be 18 years or older to participate in the survey.');
       }
@@ -48,7 +56,7 @@ const PreSurvey = ({ onStartSurvey }) => {
 
   return (
     <div style={{ border: '1px solid #ccc', padding: '15px', marginBottom: '20px' }}>
-         <LottieAnimation />
+      <LottieAnimation />
       <h2>Pre-Survey Questions</h2>
       <label>
         Are you above 18 years old?
