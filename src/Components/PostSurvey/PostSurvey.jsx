@@ -33,10 +33,11 @@ const PostSurvey = ({ onSubmitSurvey }) => {
           // Set submitted to true if the data is successfully submitted
           setSubmitted(true);
         } else {
-          console.error('Failed to submit post-survey data');
+          throw new Error('Failed to submit post-survey data');
         }
       } catch (error) {
         console.error('Error submitting post-survey data:', error);
+        alert(`Error: ${error.message}`);
       }
     } else {
       alert('Please answer all the questions before submitting the survey.');
@@ -106,7 +107,9 @@ const PostSurvey = ({ onSubmitSurvey }) => {
               />
             </label>
           </div>
-          <button onClick={handleSurveySubmit}>Submit Survey</button>
+          <button onClick={handleSurveySubmit}>
+            Submit Survey
+          </button>
         </div>
       )}
     </div>

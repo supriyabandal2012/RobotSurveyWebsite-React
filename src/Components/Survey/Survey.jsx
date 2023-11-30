@@ -6,7 +6,6 @@ import questionSets from './QuestionSets';
 
 const Survey = () => {
   const [feedback, setFeedback] = useState({});
-  const [questionRankings, setQuestionRankings] = useState({});
   const [currentSet, setCurrentSet] = useState(0);
   const [submittedResponses, setSubmittedResponses] = useState(Array.from({ length: questionSets.length + 1 }, () => []));
   const navigate = useNavigate();
@@ -21,21 +20,8 @@ const Survey = () => {
   };
 
   const initializeRankings = useCallback(() => {
-    const initialRankings = {};
-    Object.keys(questionSets[currentSet]).forEach((question, index) => {
-      initialRankings[`q${index + 1}`] = 1;
-    });
-    setQuestionRankings(initialRankings);
-  }, [currentSet]);
-
-  const getBestQuestion = useCallback(() => {
-    const setQuestions = questionSets[currentSet];
-    const bestQuestion = setQuestions.reduce((best, question) => {
-      return questionRankings[question] < questionRankings[best] ? question : best;
-    }, setQuestions[0]);
-
-    return bestQuestion;
-  }, [currentSet, questionRankings]);
+    // You can remove this function if not needed
+  }, []);
 
   useEffect(() => {
     const initialize = () => {
@@ -55,11 +41,6 @@ const Survey = () => {
     setFeedback((prevFeedback) => ({
       ...prevFeedback,
       [questionKey]: value,
-    }));
-
-    setQuestionRankings((prevRankings) => ({
-      ...prevRankings,
-      [questionKey]: prevRankings[questionKey] + (value - 3),
     }));
   };
 
@@ -98,10 +79,11 @@ const Survey = () => {
         console.log('All Survey data submitted successfully!');
         navigate('/post-survey');
       } else {
-        console.error('Failed to submit all survey data');
+        throw new Error('Failed to submit all survey data');
       }
     } catch (error) {
       console.error('Error submitting all survey data:', error);
+      alert(`Error: ${error.message}`);
     }
   };
 
@@ -112,18 +94,18 @@ const Survey = () => {
   };
 
   const handleNextSet = () => {
-  // Check if any question in the current set is unanswered
-  const isAnyQuestionUnanswered = Object.keys(feedback).some((key) => feedback[key] === '');
+    // Check if any question in the current set is unanswered
+    const isAnyQuestionUnanswered = Object.keys(feedback).some((key) => feedback[key] === '');
 
-  if (isAnyQuestionUnanswered) {
-    alert('Please answer all questions before moving to the next set.');
-    return;
-  }
+    if (isAnyQuestionUnanswered) {
+      alert('Please answer all questions before moving to the next set.');
+      return;
+    }
 
-  logResponses(); // Log responses before moving to the next set
+    logResponses(); // Log responses before moving to the next set
 
-  setCurrentSet((prevSet) => Math.min(prevSet + 1, Object.keys(questionSets).length - 1));
-};
+    setCurrentSet((prevSet) => Math.min(prevSet + 1, Object.keys(questionSets).length - 1));
+  };
 
   return (
     <div style={{ textAlign: 'center', justifyContent: 'center' }}>
