@@ -116,7 +116,7 @@ const Survey = () => {
         <h2>Questions: {setHeadings[currentSet]}</h2>
         {questionSets[currentSet].map((question, index) => (
           <div key={index}>
-            <p style={{ fontSize: '20px' }}>
+            <p style={{ fontSize: '24px' }}>
               <strong>{question}</strong>
             </p>
             <div>

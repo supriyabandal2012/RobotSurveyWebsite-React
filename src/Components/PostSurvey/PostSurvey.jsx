@@ -81,6 +81,7 @@ const PostSurvey = ({ onSubmitSurvey }) => {
                 <option value="">Select</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
+                <option value="Not Sure">Not Sure</option>
               </select>
             </label>
           </div>
@@ -94,6 +95,7 @@ const PostSurvey = ({ onSubmitSurvey }) => {
                 <option value="">Select</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
+                <option value="Not Sure">Not Sure</option>
               </select>
             </label>
           </div>

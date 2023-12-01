@@ -17,14 +17,15 @@ const PreSurvey = ({ onStartSurvey }) => {
       .then((response) => response.json())
       .then((data) => {
         const countryNames = data.map((country) => country.name.common);
-        setCountryList(countryNames);
+        const sortedCountryNames = countryNames.sort((a, b) => a.localeCompare(b));
+        setCountryList(sortedCountryNames);
       })
       .catch((error) => console.error('Error fetching countries:', error));
   }, []);
 
   const handleStartSurvey = async () => {
     if (age && gender && country && familiarityWithRobots && preferRobotsOverHumans !== '') {
-      if (age === 'yes') {
+      if (age === 'Yes') {
         const preSurveyData = {
           age,
           gender,
@@ -55,15 +56,16 @@ const PreSurvey = ({ onStartSurvey }) => {
   };
 
   return (
-    <div style={{ border: '1px solid #ccc', padding: '15px', marginBottom: '20px' }}>
+    <div style={{ textAlign: 'left', justifyContent: 'center', border: '1px solid #ccc', padding: '15px', marginBottom: '20px' }}>
       <LottieAnimation />
       <h2>Pre-Survey Questions</h2>
+      <div style={{textAlign: 'left', fontSize: '20px', marginBottom: '15px' }}>
       <label>
         Are you above 18 years old?
         <select value={age} onChange={(e) => setAge(e.target.value)}>
           <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
         </select>
       </label>
       <br />
@@ -99,16 +101,18 @@ const PreSurvey = ({ onStartSurvey }) => {
       </label>
       <br />
       <label>
-        Would you prefer robots over humans for check-in/check-out? (yes/no)
+        Would you prefer robots over humans for check-in/check-out? 
         <select
           value={preferRobotsOverHumans}
           onChange={(e) => setPreferRobotsOverHumans(e.target.value)}
         >
           <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          <option value="Not sure">Not Sure</option>
         </select>
       </label>
+      </div>
       <br />
       <button onClick={handleStartSurvey}>Start Survey</button>
     </div>
